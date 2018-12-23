@@ -1,0 +1,96 @@
+/*
+所有样式初始化
+ */
+*{
+    margin:0;
+    padding:0;
+}
+/*
+设置所有页面的通用设置
+*/
+body{
+    font-size:14px;
+    font-family:"Microsoft YaHei UI";
+    /*background:#f4f5f7;*/
+    background:#F1EFE2;
+}
+
+a{
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+
+.fl{
+    float:left;
+}
+.fr{
+    float:right;
+}
+
+/*导航条的公共样式*/
+.header{
+    overflow: hidden;
+    width:1200px;
+    height: 50px;
+    margin: 0 auto;
+    background-color: #483C46;
+    color: white;
+}
+.header .title{
+    width:300px;
+    float:left;
+    line-height: 100%;
+    text-align: center;
+    font-size: 28px;
+    margin-top: 8px;
+}
+.header .auth{
+    float:right;
+}
+.header ul{
+    overflow: hidden;
+    line-height:60px;
+}
+.header ul li{
+    float:left;
+    margin-right:50px;
+}
+.header ul li a{
+    color:white;
+}
+
+.content{
+    width: 1200px;
+    height:auto;
+    margin: 0 auto;
+}
+
+.footer {
+    height:88px;
+    margin:60px auto 0 auto;
+    width:1200px;
+    border-top:1px solid #CCC;
+    overflow:hidden;
+}
+.footer p{
+    text-align: center;
+    line-height: 88px;
+    margin:0;
+}
+.footer p span{
+    color:#f96972;
+}
+
+.goTop {
+    position: fixed;
+    right: 100px;
+    bottom: 100px;
+}
+.goTop img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}

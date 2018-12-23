@@ -1,0 +1,123 @@
+section,ul,li,img,div{
+    margin:0;
+    padding:0;
+}
+ul,li{
+    list-style:none;
+}
+
+.banner{
+    position: relative;
+    width:100%;
+    height:500px;
+    vertical-align: middle;
+}
+
+.banner-img{
+    margin:0;
+    border: none;
+    vertical-align: middle;
+    width:100%;
+    height: 100%;
+}
+.section1_meta{
+    position: absolute;
+    top: 20px;
+    width: 400px;
+    height: 200px;
+    left: 400px;
+    text-align: center;
+    justify-items: center;
+    line-height: 65px;
+}
+._title{
+    font-size: 36px;
+    letter-spacing: 10px;
+    font-family: "Microsoft YaHei UI Light";
+}
+._subTitle{
+    font-size: 13px;
+    letter-spacing: 10px;
+    font-family: "Microsoft YaHei UI Light";
+}
+._subBtn{
+    font-size: 13px;
+    letter-spacing: 4px;
+    width: 120px;
+    height: 45px;
+    margin: auto;
+    background-color: #02263B;
+    color: white;
+    border-radius: 13px;
+    line-height: 45px;
+    text-align: center;
+}
+
+.img-content{
+    width:100%;
+    float: left;
+    margin-top:70px;
+}
+
+.img-content>ul{
+    width:1280px;
+}
+.img-content>ul>li{
+    float: left;
+    margin:0 62px 60px 0;
+    height: 538px;
+    width:358px;
+    background: #F8F8FF;
+    box-shadow:0 0 5px #CCC;
+    -moz-box-shadow:0 0 5px #CCC;
+    -webkit-box-shadow:0 0 5px #CCC;
+}
+
+.img-content>ul>li .info{
+    padding: 35px;
+    position: relative;
+    height: 240px;
+}
+
+.img-content>ul>li img{
+    width:100%;
+}
+
+.img-content>ul>li .info h3{
+    color:#FF0000;
+    font-size:23px;
+}
+
+.img-content>ul>li .info p{
+    line-height:23px;
+    margin-top:25px;
+}
+
+.img-content>ul>li .btn{
+    position: absolute;
+    bottom: 0;
+}
+
+.img-content>ul>li .btn a{
+    width:60px; height:33px; line-height:33px;
+    color:#FFF;
+    text-align: center;
+    display:block;
+    float:left;
+    border-radius:5px;
+    border:1px solid #F61815;
+}
+
+.img-content>ul>li .btn a.edit{
+    background: #F61815;
+}
+
+.img-content>ul>li .btn a.del{
+    margin-left:20px;
+    color: #F61815;
+}
+
+video{
+    margin-top: 58px;
+}
+
