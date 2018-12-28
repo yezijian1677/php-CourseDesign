@@ -6,13 +6,21 @@
  * Time: 19:15
  */
 header("content-type:text/html;charset=utf-8");
+session_start();
+if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
+    $login = false;
+} else {
+    $login = true;
+    $user = $_SESSION['user'];
+}
+
 require_once "./lib/util.php";
 $con = mysqlInit();
 //表示从数据中取出news，按照id递减的顺序，以及浏览次数递减的顺序排列
 $sql = "select * from `board`";
 
 $obj = mysqli_query($con, $sql);
-mysqli_query($con, "set names utf-8 ");
+mysqli_set_charset($con, "utf-8");
 while ($result = mysqli_fetch_assoc($obj)){
     $comment[] = $result;
 }
@@ -45,8 +53,12 @@ while ($result = mysqli_fetch_assoc($obj)){
                     <p class="comment-text"><?php echo $c["content"] ?></p>
                     <div class="bottom-comment">
                         <ul class="comment-actions">
+                            <?php if ($login==true&&$user['status']==0):?>
+                            <li class="complain"><a style="color: gray;" href="deleteBoard.php?id=<?php echo $c['id'] ?>" >删除</a></li>
+                            <?php else: ?>
                             <li class="complain">超级</li>
                             <li class="reply">聪明</li>
+                            <?php endif;?>
                         </ul>
                     </div>
                 </div>

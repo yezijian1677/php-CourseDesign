@@ -26,8 +26,8 @@ if (!empty($_POST["name"])) {
         echo "<script>alert('邮箱不合法不符合规范'+'{$email}');</script>";exit;
     }
 
-    $sql = "insert `board`(`name`, `email`,`content`)
-     values('{$name}','{$email}','{$content}') ";
+    $sql = "insert `board`(`id`,`name`, `email`,`content`)
+     values(null, '{$name}','{$email}','{$content}'); ";
     if ($obj = mysqli_query($con, $sql)){
         echo "<script>alert('留言发布成功');window.location.href='index.php';</script>";exit;
     } else {

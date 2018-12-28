@@ -10,7 +10,10 @@ header("content-type:text/html;charset=utf-8");
 //开启session
 session_start();
 require_once "./lib/util.php";
+$con = mysqlInit();
+mysqli_set_charset($con, "utf-8");
 
+$stars = null;
 //如果session中不存在登录信息或者信息为空，登录状态为false，否则为true,并且返回session里的数据
 if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
     $login = false;
@@ -20,9 +23,18 @@ if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
     $nickname_user = '用户';
     $nickname_admin = '管理员';
     $status_name = $user['status'] > 0 ? $nickname_user:$nickname_admin;
+
+    //查询收藏列表
+    unset($sql, $obj, $result);
+    $sql = "select * from `star` where `username` = '{$user['username']}'";
+    $obj = mysqli_query($con, $sql);
+    while ($result = mysqli_fetch_assoc($obj)){
+        $stars[] = $result;
+//        var_dump($stars);
+    }
+
 }
-$con = mysqlInit();
-mysqli_query($con, "set names utf-8");
+unset($sql, $obj, $result);
 //表示从数据中取出news，按照id递减的顺序，以及浏览次数递减的顺序排列
 $sql = "select `id`, `title`, `content_short`, `pic` from `news` order by `id` desc, `view` desc";
 
@@ -32,6 +44,7 @@ while ($result = mysqli_fetch_assoc($obj)){
     $news[] = $result;
 }
 //var_dump($news);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,6 +54,8 @@ while ($result = mysqli_fetch_assoc($obj)){
     <link rel="stylesheet" type="text/css" href="./static/css/common.css" />
     <link rel="stylesheet" type="text/css" href="./static/css/index.css" />
     <link rel="stylesheet" type="text/css" href="./static/css/slide.css" />
+    <link rel="stylesheet" type="text/css" href="./static/css/slide-right.css" />
+    <link rel="stylesheet" type="text/css" href="./static/css/slide-right-down.css" />
     <link rel="stylesheet" type="text/css" href="./static/css/board.css" />
 </head>
 <body>
@@ -100,7 +115,7 @@ while ($result = mysqli_fetch_assoc($obj)){
             <?php if (sizeof($news)!=0): ?>
                 <?php foreach ($news as $n):?>
                     <li>
-                        <img class="img-li-fix" src="<?php echo $n["pic"] ?>" alt="<?php echo $n["title"] ?>">
+                        <img class="" src="<?php echo $n["pic"] ?>" alt="<?php echo $n["title"] ?>">
                         <div class="info">
                             <a href="detail.php?id=<?php echo $n["id"] ?>">
                                 <h3 class="img_title"><?php echo $n["title"] ?></h3>
@@ -112,6 +127,10 @@ while ($result = mysqli_fetch_assoc($obj)){
                             <div class="btn">
                                 <a href="edit.php?id=<?php echo $n["id"] ?>" class="edit">编辑</a>
                                 <a href="delete.php?id=<?php echo $n["id"] ?>" class="del">删除</a>
+                            </div>
+                            <?php else: ?>
+                            <div class="btn">
+                                <a href="detail.php?id=<?php echo $n["id"] ?>" class="star">查看详情</a>
                             </div>
                             <?php endif;?>
                         </div>
@@ -158,6 +177,48 @@ while ($result = mysqli_fetch_assoc($obj)){
             <a href="#volet_clos" class="fermer" aria-hidden="true">隐藏资讯</a>
         </div>
     </aside>
+
+    <?php if ($login == true):?>
+    <aside id="volet_clos2" style="text-align: center;">
+        <div id="volet2">
+            <div class="login_tips">Profile<a href="userInfo.php" style="margin-left: 150px; color: white; font-size: 12px;">个人资料</a></div>
+            <div class="user_info">
+                <div class="user_avatar"><img src="./static/image/useravatar.jpg" style="height: 78px;width: 78px; border-radius: 50%;border: 3px solid #00C78C;"></div>
+                <p class="user_name"><?php echo $user['username']?></p>
+                <article class="user_desc" id="user_desc" onclick="edit()">
+                    <?php echo $user['desc']?>
+                </article>
+            </div>
+            <div class="user_func">
+                <a href="changepassword.php" class="update">修改密码</a>
+                <a href="#volet3" class="star">我的关注</a>
+            </div>
+            <a href="#volet2" class="ouvrir" aria-hidden="true">个人信息</a>
+            <a href="#volet_clos2" class="fermer" aria-hidden="true">隐藏信息</a>
+        </div>
+
+    </aside>
+    <?php endif;?>
+<!--关注窗口-->
+    <?php if ($login == true):?>
+        <aside id="volet_clos3" style="text-align: center;">
+            <div id="volet3">
+                <div class="login_tips">My Star</div>
+                <?php if (sizeof($stars)==0): ?>
+                    <p style="margin-top: 30px;height: 25px;color: darkblue; font-size: 15px;font-weight: bold;">您还没有收藏喔</p>
+                <?php else: ?>
+                    <?php foreach ($stars as $s):?>
+                        <div class="star_title star_1"><a href="detail.php?id=<?php echo $s['newsId'] ?>"><?php echo $s["title"] ?></a></div>
+                    <?php endforeach;?>
+                <?php endif; ?>
+
+
+                <a href="#volet3" class="ouvrir" aria-hidden="true">我的关注</a>
+                <a href="#volet_clos3" class="fermer" aria-hidden="true">隐藏关注</a>
+            </div>
+
+        </aside>
+    <?php endif;?>
 
     <section class="board">
         <form name="board-form" id="board-form" action="board.php" method="post" class="white-pink">
@@ -207,7 +268,9 @@ while ($result = mysqli_fetch_assoc($obj)){
 </body>
 <script src="./static/js/jquery-3.3.1.min.js"></script>
 <script>
-
+    function edit(){
+        document.getElementById("user_desc").setAttribute("contentEditable", "true");
+    }
     $(function () {
        $(".del").on("click", function () {
          if (confirm("确认删除改资讯吗？")){

@@ -81,6 +81,7 @@ ul,li{
 
 .img-content>ul>li img{
     width:100%;
+    height: 200px;
 }
 
 .img-content>ul>li .info h3{
@@ -110,6 +111,15 @@ ul,li{
 
 .img-content>ul>li .btn a.edit{
     background: #F61815;
+}
+
+.img-content>ul>li .btn a.star{
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ff5bb0), color-stop(1, #ef027d) );
+}
+.img-content>ul>li .btn a.star:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ef027d), color-stop(1, #ff5bb0) );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ef027d', endColorstr='#ff5bb0');
+    background-color:#ef027d;
 }
 
 .img-content>ul>li .btn a.del{

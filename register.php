@@ -44,7 +44,7 @@ if (!empty($_POST['username'])){
         exit;
     }
     //修改编码
-    mysqli_query($con, "set names utf-8");
+    mysqli_set_charset($con, "utf-8");
 
     //插入用户之前判断用户是否在user表中存在
     $sql = "select count(`id`) as total from `user` where `username` = '{$username}'";
@@ -107,20 +107,20 @@ if (!empty($_POST['username'])){
                     <form class="login-table" name="register" id="register-form" action="register.php" method="post">
                         <div class="login-left">
                             <label class="username">用户名</label>
-                            <input type="text" class="yhmiput" name="username" placeholder="请输入用户名" id="username">
+                            <input required="required" type="text" class="yhmiput" name="username" placeholder="请输入用户名" id="username">
                         </div>
                         <div class="login-right">
                             <label class="passwd">密码</label>
-                            <input type="password" class="yhmiput" name="password" placeholder="请输入密码" id="password">
+                            <input required="required" type="password" class="yhmiput" name="password" placeholder="请输入密码" id="password">
                         </div>
                         <div class="login-right">
                             <label class="passwd">确认</label>
-                            <input type="password" class="yhmiput" name="repassword" placeholder="请再次输入密码"
+                            <input required="required" type="password" class="yhmiput" name="repassword" placeholder="请再次输入密码"
                                    id="repassword">
                         </div>
                         <div class="login-right">
                             <label class="passwd">邮箱</label>
-                            <input type="email" class="yhmiput" name="email" placeholder="请输入邮箱" id="email">
+                            <input required="required" type="email" class="yhmiput" name="email" placeholder="请输入邮箱" id="email">
                         </div>
                         <div class="login-btn">
                             <button type="submit">注册</button>

@@ -12,7 +12,10 @@ body{
     font-size:14px;
     font-family:"Microsoft YaHei UI";
     /*background:#f4f5f7;*/
-    background:#F1EFE2;
+    /*background:#F1EFE2;*/
+    background:-webkit-linear-gradient(90deg, #F0C27B 10%, #4B1248 90%);
+    background:-webkit-linear-gradient(left, #F0C27B 10%, #4B1248 90%);
+    background:linear-gradient(90deg, #F0C27B 10%, #4B1248 90%);
 }
 
 a{
@@ -87,7 +90,7 @@ a:hover{
 .goTop {
     position: fixed;
     right: 100px;
-    bottom: 100px;
+    bottom: 30px;
 }
 .goTop img {
     height: 40px;

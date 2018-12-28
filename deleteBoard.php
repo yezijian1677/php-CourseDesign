@@ -16,11 +16,13 @@ if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
     echo "<script>alert('请登录');window.location.href='login.php';</script>";exit;
 }
 $user = $_SESSION["user"];
-//从url获取newsId
-$newsId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']): "";
+
+$commentId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']): "";
+$commentId = (integer) $commentId;
+var_dump($commentId);
 
 //如果资讯id不存在就跳转
-if (!$newsId){
+if (!$commentId){
     echo "<script>alert('参数非法');window.location.href='index.php';</script>";exit;
 }
 //连接数据库
@@ -28,14 +30,14 @@ $con = mysqlInit();
 mysqli_set_charset($con, "utf-8");
 
 //根据资讯id校验id
-$sql = "select `id` from `news` where `id` = {$newsId}";
+$sql = "select `id` from `board` where `id` = {$commentId}";
 $obj = mysqli_query($con, $sql);
 //如果根据id查询不到资讯，就跳转回index页
-if(!$news = mysqli_fetch_assoc($obj)){
+if(!$commentId = mysqli_fetch_assoc($obj)){
     echo "<script>alert('id不存在');window.location.href='index.php';</script>";exit;
 }
-
-$sql = "delete from `news` where `id` = '{$newsId}'";
+unset($sql, $result);
+$sql = "delete from `board` where `id` = '{$commentId}'";
 if ($result = mysqli_query($con, $sql)){
     echo "<script>alert('删除成功');window.location.href='index.php';</script>";exit;
 } else {

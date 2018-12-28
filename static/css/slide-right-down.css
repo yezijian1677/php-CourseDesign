@@ -1,0 +1,86 @@
+body {
+    counter-reset: starsection;
+}
+.star_1::before {
+    counter-increment: starsection;
+    content: "Star" counter(starsection)"  ";
+    color: white;
+    font-size: 16px;
+}
+#volet3 {
+    width: 270px;
+    padding: 10px;
+    background:  #2A8FBD;
+    color: gray();
+    opacity: 0.9;
+}
+#volet3 a.ouvrir,
+#volet3 a.fermer {
+    padding: 10px 25px;
+    background: #495A80;
+    color: #fff;
+    text-decoration: none;
+}
+
+#volet3 {
+    position: absolute;
+    right: -290px;  /* test fixed + scroll, on retire la position top */
+    -webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    transition: all .5s ease-in;
+}
+
+#volet3 a.ouvrir,
+#volet3 a.fermer {
+    position: absolute;
+    left: -72px;
+    top: 35px;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -moz-radius: 0 0 8px 8px;
+    border-radius: 0 0 8px 8px;
+}
+#volet3 a.fermer {
+    display: none;
+}
+#volet3:target {
+    right: 10px;
+}
+
+/* code pour la fermeture */
+
+#volet3:target a.fermer {
+    display: block;
+}
+#volet3:target a.ouvrir {
+    display: none;
+}
+#volet_clos3:target #volet2 {
+    right: -290px;
+}
+
+#volet_clos3 {
+    position: fixed;
+    top: 350px;
+    right: 0;
+}
+
+.star_title{
+    text-align: left;
+    text-indent: 32px;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid white;
+}
+
+.star_title a{
+    color: white;
+    text-decoration-line: blink;
+}
+.star_title a:hover{
+    color: black;
+    text-decoration-line: blink;
+}

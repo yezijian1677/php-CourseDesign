@@ -6,13 +6,22 @@
 	bottom: 10px;
 }
 
+.btn-sm-pink{
+	display:inline-block;
+	width:62px;
+	height:32px;
+	line-height:32px;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ef027d), color-stop(1, #ff5bb0) );
+	color:white;
+}
+
 .btn-sm-white{
 	display:inline-block;
 	width:62px;
 	height:32px;
 	line-height:32px;
 	background-color:#fff;
-	color:#f01414;
+	color:#ef027d;
 }
 
 .section .sec_intru_bg{

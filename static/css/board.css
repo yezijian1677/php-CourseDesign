@@ -13,12 +13,12 @@
     display: block;
     border-bottom: 1px solid #F5F5F5;
     margin: -10px -30px 10px -30px;
-    color: #969696;
+    color: black;
 }
 .white-pink h1>span {
     display: block;
     font-size: 11px;
-    color: #C4C2C2;
+    color: black;
 }
 .white-pink label {
     display: block;
@@ -30,7 +30,7 @@
     text-align: right;
     padding-right: 10px;
     margin-top: 10px;
-    color: #969696;
+    color: black;
 }
 .white-pink input[type="text"], .white-pink input[type="email"], .white-pink textarea,.white-pink select{
     color: #555;

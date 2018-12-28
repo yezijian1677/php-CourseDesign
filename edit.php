@@ -29,7 +29,7 @@ if (!$newsId){
 
 //根据商品信息查询商品信息
 $con = mysqlInit();
-mysqli_query($con, "set names utf-8");
+mysqli_set_charset($con, "utf-8");
 $sql = "select * from `news` where `id` = {$newsId}";
 $obj = mysqli_query($con, $sql);
 //如果根据id查询不到资讯，就跳转回index页

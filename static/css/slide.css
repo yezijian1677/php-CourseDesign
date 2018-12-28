@@ -19,6 +19,7 @@ body {
     padding: 10px;
     background: #6B9A49;
     color: #fff;
+    opacity: 0.8;
 }
 
 #volet a.ouvrir,

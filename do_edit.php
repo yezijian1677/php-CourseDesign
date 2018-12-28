@@ -21,7 +21,7 @@ $user = $_SESSION["user"];
 if (!empty($_POST["title"])){
     //连接数据库
     $con = mysqlInit();
-    mysqli_query($con,"set names utf-8");
+    mysqli_set_charset($con, "utf-8");
 
     //如果资讯id不存在就跳转
     if ( !$newsId = intval($_POST['id'])){

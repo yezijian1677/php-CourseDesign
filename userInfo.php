@@ -2,71 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: 16773
- * Date: 2018/12/1
- * Time: 14:24
+ * Date: 2018/12/28
+ * Time: 11:17
  */
+
 header("content-type:text/html;charset=utf-8");
-
-//开启session
 session_start();
-
-
-//如果session中已经存在登录信息且不为空，则不再进行登录,不执行表单处理
-if (isset($_SESSION["user"])&&!empty($_SESSION["user"])){
-    header("location:index.php");
-    exit;
+$login = false;
+if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
+    echo "<script>alert('请登录');window.location.href='login.php';</script>";exit;
+}else{
+    $login = true;
+    $user = $_SESSION['user'];
+    $nickname_user = '用户';
+    $nickname_admin = '管理员';
+    $status_name = $user['status'] > 0 ? $nickname_user:$nickname_admin;
 }
 
-//验证是不是post提交,表单处理
-if (!empty($_POST["username"])){
-    include_once "./lib/util.php";
-
-    //对用户名密码进行过滤空格
-    $username = filter_var($_POST['username'],FILTER_SANITIZE_STRING);
-    $password = filter_var($_POST['password'],FILTER_SANITIZE_STRING);
-
-    if (!$username){
-        echo "<script>alert('用户名不符合规范'+'{$username}');window.location.href='register.php';</script>";exit;
-    }
-
-    if (!$password){
-        echo "<script>alert('密码不符合规范'+'{$password}');window.location.href='register.php';</script>";exit;
-    }
-
-    $con = mysqlInit();
-    mysqli_query($con, "set names utf-8");
-    if (!$con){
-        echo mysqli_error();
-        exit;
-    }
-
-    //根据用户名查询用户
-    $sql = "select * from `user` where `username` = '{$username}'";
-
-    $obj = mysqli_query($con, $sql);
-    $result = mysqli_fetch_assoc($obj);
-
-    if (is_array($result) && !empty($result)){
-
-//        如果有用户再判断密码
-        //var_dump($result);die;
-        if ($password === $result['password']){
-//            储存session信息 字段user
-            $_SESSION['user'] = $result;
-//            登录成功定向到首页
-            header("Location:index.php");
-        } else {
-//            header("location:login.php");
-//            echo "<script>alert('密码错误，请再次输入')</script>";exit;
-            echo "<script>alert('密码错误');window.location.href='login.php';</script>";
-
-        }
-    } else {
-        echo "<script>alert('用户名不存在');window.location.href='login.php';</script>";
-    }
-
-
-}
 
 
 ?>
@@ -74,22 +26,33 @@ if (!empty($_POST["username"])){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>用户登录</title>
+    <title>个人信息</title>
     <link type="text/css" rel="stylesheet" href="./static/css/common.css">
     <link type="text/css" rel="stylesheet" href="./static/css/add.css">
     <link rel="stylesheet" type="text/css" href="./static/css/login.css">
     <link type="text/css" rel="stylesheet" href="./static/css/slide.css">
 </head>
 <body>
+
 <nav class="header">
     <div class="title" onclick="window.open('login.php')">
         中美贸易战
     </div>
-    <div class="auth fr">
+    <div class="auth">
         <ul>
-            <li><a href="index.php">首页</a></li>
-            <li><a href="login.php">登录</a></li>
-            <li><a href="register.php">注册</a></li>
+            <?php if ($login == false):?>
+                <li><a href="login.php">登录</a></li>
+                <li><a href="register.php">注册</a></li>
+                <li><a href="board_detail.php">评论区</a></li>
+            <?php else: ?>
+                <li><span><?php echo $status_name?> : <?php echo $user['username']?></span></li>
+                <!--                //如果是管理员才有发布功能-->
+                <?php if ($user['status']==0):?>
+                    <li><a href="release.php">发布</a></li>
+                <?php endif;?>
+                <li><a href="board_detail.php">评论区</a></li>
+                <li><a href="logout.php">退出</a></li>
+            <?php endif;?>
         </ul>
     </div>
 </nav>
@@ -103,19 +66,21 @@ if (!empty($_POST["username"])){
             <div class="user-login">
                 <div class="user-box">
                     <div class="user-title">
-                        <p>用户登录</p>
+                        <p>个人信息</p>
                     </div>
-                    <form class="login-table" name="login" id="login-form" action="login.php" method="post">
+                    <form class="login-table" name="user-form" id="user-form" action="do_userinfo.php" method="post">
                         <div class="login-left">
                             <label class="username">用户名</label>
-                            <input required="required" type="text" class="yhmiput" name="username" placeholder="请输入用户名" id="username">
+                            <input value="<?php echo $user['username']?>" disabled="disabled" required="required" type="text" class="yhmiput" name="username" placeholder="请输入用户名" id="username">
                         </div>
-                        <div class="login-right">
-                            <label class="passwd">密码</label>
-                            <input required="required" type="password" class="yhmiput" name="password" placeholder="请输入密码" id="password">
+                        <div class="login-left">
+                            <label class="username">个人描述</label>
+                            <textarea style="height: 60px;width: 215px;margin-left: 10px; " id="userdesc" name="userdesc"><?php echo $user['desc']?></textarea>
                         </div>
+
                         <div class="login-btn">
-                            <button type="submit">登录</button>
+                            <button type="submit">保存</button>
+                            <button type="button" onclick="window.location.href='index.php'">取消修改</button>
                         </div>
                     </form>
 
@@ -166,28 +131,8 @@ if (!empty($_POST["username"])){
 </footer>
 
 </body>
-<script src="./static/js/jquery-3.3.1.min.js"></script>
-<script>
-    $(function () {
-        $('#login-form').submit(function () {
-            var username = $('#username').val(),
-                password = $('#password').val();
-            if (username == '' || username.length <= 0) {
-                alert("用户名不能为空");
-                $('#username').focus();
-                return false;
-            }
-
-            if (password == '' || password.length <= 0) {
-                alert("密码不能为空");
-                $('#password').focus();
-                return false;
-            }
-
-
-            return true;
-        })
-
-    })
-</script>
 </html>
+
+
+
+

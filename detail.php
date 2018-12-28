@@ -10,13 +10,10 @@ header("content-type:text/html;charset=utf-8");
 session_start();
 include_once "./lib/util.php";
 
-//如果session中不存在登录信息或者信息为空，登录状态为false，否则为true,并且返回session里的数据
-if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
-    $login = false;
-} else {
-    $login = true;
-    $user = $_SESSION['user'];
-}
+//定义是否被收藏
+$hadStar = false;
+$con = mysqlInit();
+
 
 //获取newsId, 判断集合里是否有id且是不是一个数字，是的话返回id数字，否则返回空
 $newsId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']): "";
@@ -24,10 +21,29 @@ if (!$newsId){
     echo "<script>alert('参数非法');window.location.href='index.php';</script>";exit;
 }
 
-//根据商品信息查询商品信息
-$con = mysqlInit();
-mysqli_query($con, "set names utf-8");
+//如果session中不存在登录信息或者信息为空，登录状态为false，否则为true,并且返回session里的数据
+if (!isset($_SESSION["user"])||empty($_SESSION["user"])){
+    $login = false;
+} else {
+    $login = true;
+    $user = $_SESSION['user'];
 
+
+//查询用户是否收藏
+    unset($sql, $obj);
+    $sql = "select * from `star` where `username`= '{$user['username']}' and `newsId` = '{$newsId}'";
+    $obj = mysqli_query($con, $sql);
+    $num = mysqli_fetch_array($obj);
+//查询到有数据那么就被收藏了
+    if ($num){
+        $hadStar = true;
+    }
+}
+
+
+
+mysqli_set_charset($con, "utf-8");
+//根据商品信息查询商品信息
 $sql = "select * from `news` where `id` = {$newsId}";
 $obj = mysqli_query($con, $sql);
 //如果根据id查询不到资讯，就跳转回index页
@@ -43,6 +59,7 @@ $username = mysqli_fetch_assoc($obj);
 unset($sql, $obj);
 $sql = "update `news` set `view`=`view`+1 where `id` =".$newsId;
 mysqli_query($con, $sql);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +81,7 @@ mysqli_query($con, $sql);
                 <li><a href="login.php">登录</a></li>
                 <li><a href="register.php">注册</a></li>
             <?php else: ?>
-                <li><span>管理员: <?php echo $user['username']?></span></li>
+                <li><span><?php echo $user['username']?></span></li>
                 <li><a href="release.php">发布</a></li>
                 <li><a href="logout.php">退出</a></li>
             <?php endif;?>
@@ -88,6 +105,13 @@ mysqli_query($con, $sql);
                     </dd>
                 </dl>
                 <ul>
+<!--                    收藏与取消收藏-->
+                    <?php if ($hadStar==false):?>
+                    <li class="btn"><a href="star.php?id=<?php echo $newsId ?>" class="btn btn-sm-pink" style="margin-left:8px;">收藏</a></li>
+                    <?php else: ?>
+                    <li class="btn"><a href="unstar.php?id=<?php echo $newsId ?>" class="btn btn-sm-pink" style="margin-left:8px;">取关</a></li>
+                    <?php endif;?>
+
                     <li class="btn"><a href="index.php" class="btn btn-sm-white" style="margin-left:8px;">返回首页</a></li>
                 </ul>
             </div>

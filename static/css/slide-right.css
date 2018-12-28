@@ -1,0 +1,105 @@
+#volet2 {
+    width: 270px;
+    padding: 10px;
+    background:  #00C78C;
+    color: gray();
+    opacity: 0.9;
+}
+#volet2 a.ouvrir,
+#volet2 a.fermer {
+    padding: 10px 25px;
+    background: purple;
+    color: #fff;
+    text-decoration: none;
+}
+
+#volet2 {
+    position: absolute;
+    right: -290px;  /* test fixed + scroll, on retire la position top */
+    -webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    transition: all .5s ease-in;
+}
+
+#volet2 a.ouvrir,
+#volet2 a.fermer {
+    position: absolute;
+    left: -72px;
+    top: 35px;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -moz-radius: 0 0 8px 8px;
+    border-radius: 0 0 8px 8px;
+}
+#volet2 a.fermer {
+    display: none;
+}
+#volet2:target {
+    right: 10px;
+}
+
+/* code pour la fermeture */
+
+#volet2:target a.fermer {
+    display: block;
+}
+#volet2:target a.ouvrir {
+    display: none;
+}
+#volet_clos2:target #volet2 {
+    right: -290px;
+}
+
+#volet_clos2 {
+    position: fixed;
+    top: 50px;
+    right: 0;
+}
+
+.login_tips{
+    text-align: left;
+    font-size: 16px;
+    font-weight: bolder;
+    height: 30px;
+    border-bottom: 3px solid white;
+}
+.user_info{
+    background: white;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+}
+.user_avatar{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 4px;
+}
+.user_name{
+    font-size: 14px;
+    font-weight: bold;
+    color: #00C78C;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    border-bottom: 3px solid #00C78C;
+}
+.user_desc{
+    color: #00C78C;
+    font-size: 13px;
+    padding: 0 40px;
+    text-indent: 26px;
+    text-align: left;
+}
+.user_func{
+    height: 20px;
+    text-align: right;
+}
+.user_func a{
+    width: 50%;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 20px;
+    color: white;
+    letter-spacing: 2px;
+
+}
