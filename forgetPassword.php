@@ -3,22 +3,27 @@
  * Created by PhpStorm.
  * User: 16773
  * Date: 2018/12/1
- * Time: 11:17
+ * Time: 14:24
  */
-
 header("content-type:text/html;charset=utf-8");
-//表单都不为空数据才会提交过来
-if (!empty($_POST['username'])){
 
-    //加载utils工具
-    require_once "./lib/util.php";
+//开启session
+session_start();
+
+
+//如果session中已经存在登录信息且不为空，则不再进行登录,不执行表单处理
+if (isset($_SESSION["user"])&&!empty($_SESSION["user"])){
+    header("location:index.php");
+    exit;
+}
+
+//验证是不是post提交,表单处理
+if (!empty($_POST["username"])){
+    include_once "./lib/util.php";
+
     //对用户名密码进行过滤空格
-    //FILTER_SANITIZE_EMAIL 过滤器删除字符串中所有非法的 e-mail 字符。
-    //该过滤器允许所有的字符、数字以及 $-_.+!*'{}|^~[]`#%/?@&=。
-    $username = filter_var($_POST['username'],FILTER_SANITIZE_EMAIL);
+    $username = filter_var($_POST['username'],FILTER_SANITIZE_STRING);
     $password = filter_var($_POST['password'],FILTER_SANITIZE_STRING);
-    $repassword = filter_var($_POST['repassword'],FILTER_SANITIZE_STRING);
-    $email = filter_var($_POST['email'],FILTER_VALIDATE_EMAIL);
 
     if (!$username){
         echo "<script>alert('用户名不符合规范'+'{$username}');window.location.href='register.php';</script>";exit;
@@ -27,62 +32,55 @@ if (!empty($_POST['username'])){
     if (!$password){
         echo "<script>alert('密码不符合规范'+'{$password}');window.location.href='register.php';</script>";exit;
     }
-    if (!$repassword){
-        echo "<script>alert('密码不符合规范'+'{$password}');window.location.href='register.php';</script>";exit;
-    }
-    if ($password !== $repassword) {
-        echo "<script>alert('二次密码不一致'+'{$password}');window.location.href='register.php';</script>";exit;
-    }
-    if (!$email){
-        echo "<script>alert('邮箱不符合规范'+'{$password}');window.location.href='register.php';</script>";exit;
-    }
 
-    //数据库连接
     $con = mysqlInit();
+    mysqli_query($con, "set names utf-8");
     if (!$con){
         echo mysqli_error();
         exit;
     }
-    //修改编码
-    mysqli_set_charset($con, "utf-8");
 
-    //插入用户之前判断用户是否在user表中存在
-    $sql = "select count(`id`) as total from `user` where `username` = '{$username}'";
+    //根据用户名查询用户
+    $sql = "select * from `user` where `username` = '{$username}'";
+
     $obj = mysqli_query($con, $sql);
     $result = mysqli_fetch_assoc($obj);
-    //var_dump($result);die;
-    //判断用户名存在
-    if (isset($result['total'])&&$result['total']>0){
-        echo '用户名已存在';exit;
+
+    if (is_array($result) && !empty($result)){
+
+//        如果有用户再判断密码
+        //var_dump($result);die;
+        if ($password === $result['password']){
+//            储存session信息 字段user
+            $_SESSION['user'] = $result;
+//            登录成功定向到首页
+            header("Location:index.php");
+        } else {
+//            header("location:login.php");
+//            echo "<script>alert('密码错误，请再次输入')</script>";exit;
+            echo "<script>alert('密码错误');window.location.href='login.php';</script>";
+
+        }
+    } else {
+        echo "<script>alert('用户名不存在');window.location.href='login.php';</script>";
     }
 
-    //释放变量之前的变量,插入注册信息
-    unset($obj, $result, $sql);
 
-    //生成忘记密码修改密码的种子
-    $seed = mt_rand(999,9999);
-    $sql = "insert `user` (`username`,`password`,`create_time`, `status`,`seed`) values ('{$username}','{$password}', '{$_SERVER['REQUEST_TIME']}',1,'{$seed}') ";
-
-    $obj = mysqli_query($con, $sql);
-    if ($obj){
-        echo "<script>alert('注册成功'+'{$username}'+',联系管理员获取随机码');window.location.href='login.php';</script>";
-        exit;
-    }
 }
+
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>用户注册</title>
+    <title>用户登录</title>
     <link type="text/css" rel="stylesheet" href="./static/css/common.css">
     <link type="text/css" rel="stylesheet" href="./static/css/add.css">
     <link rel="stylesheet" type="text/css" href="./static/css/login.css">
     <link type="text/css" rel="stylesheet" href="./static/css/slide.css">
 </head>
 <body>
-
 <nav class="header">
     <div class="title" onclick="window.open('login.php')">
         中美贸易战
@@ -105,29 +103,31 @@ if (!empty($_POST['username'])){
             <div class="user-login">
                 <div class="user-box">
                     <div class="user-title">
-                        <p>用户注册</p>
+                        <p>忘记密码</p>
                     </div>
-                    <form class="login-table" name="register" id="register-form" action="register.php" method="post">
+                    <form class="login-table" name="forget" id="forget-form" action="do_forget.php" method="post">
                         <div class="login-left">
                             <label class="username">用户名</label>
                             <input required="required" type="text" class="yhmiput" name="username" placeholder="请输入用户名" id="username">
                         </div>
                         <div class="login-right">
+                            <label class="username">随机码</label>
+                            <input required="required" type="password" class="yhmiput" name="seed" placeholder="请输入随机码" id="seed">
+                        </div>
+                        <div class="login-right">
                             <label class="passwd">密码</label>
-                            <input required="required" type="password" class="yhmiput" name="password" placeholder="请输入密码" id="password">
+                            <input required="required" type="password" class="yhmiput" name="newpassword" placeholder="请输入新密码" id="newpassword">
                         </div>
                         <div class="login-right">
                             <label class="passwd">确认</label>
                             <input required="required" type="password" class="yhmiput" name="repassword" placeholder="请再次输入密码"
                                    id="repassword">
                         </div>
-                        <div class="login-right">
-                            <label class="passwd">邮箱</label>
-                            <input required="required" type="email" class="yhmiput" name="email" placeholder="请输入邮箱" id="email">
-                        </div>
                         <div class="login-btn">
-                            <button type="submit">注册</button>
+                            <button type="submit">确认修改</button>
+                            <a style="color: black; font-size: 12px;margin-left: 105px;" href="login.php">返回登陆</a>
                         </div>
+
                     </form>
 
                 </div>
@@ -179,32 +179,33 @@ if (!empty($_POST['username'])){
 </body>
 <script src="./static/js/jquery-3.3.1.min.js"></script>
 <script>
-    $(function () {
-        $('#register-form').submit(function () {
+    $$(function () {
+        $('#forget-form').submit(function () {
             var username = $('#username').val(),
-                password = $('#password').val(),
+                seed = $('#seed').val(),
+                newpassword = $('#newpassword').val(),
                 repassword = $('#repassword').val();
-                email = $('#email').val();
+            email = $('#email').val();
             if (username == '' || username.length <= 0) {
                 alert("用户名不能为空");
                 $('#username').focus();
                 return false;
             }
 
-            if (password == '' || password.length <= 0) {
+            if (newpassword == '' || newpassword.length <= 0) {
                 alert("密码不能为空");
                 $('#password').focus();
                 return false;
             }
 
-            if (repassword == '' || repassword.length <= 0 || (password != repassword)) {
+            if (repassword == '' || repassword.length <= 0 || (newpassword != repassword)) {
                 alert("二次密码不正确");
                 $('#repassword').focus();
                 return false;
             }
 
-            if (email == '' || email.length <= 0) {
-                alert("用户名不能为空");
+            if (seed == '' || seed.length <= 0) {
+                alert("随机码不能为空");
                 $('#username').focus();
                 return false;
             }
@@ -216,7 +217,3 @@ if (!empty($_POST['username'])){
     })
 </script>
 </html>
-
-
-
-

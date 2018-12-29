@@ -116,7 +116,9 @@ if (!empty($_POST["username"])){
                         </div>
                         <div class="login-btn">
                             <button type="submit">登录</button>
+                            <a style="color: black; font-size: 12px;margin-left: 105px;" href="forgetPassword.php">忘记密码</a>
                         </div>
+
                     </form>
 
                 </div>

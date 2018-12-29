@@ -28,7 +28,7 @@ $con = mysqlInit();
 mysqli_set_charset($con, "utf-8");
 
 //根据资讯id校验id
-$sql = "select `id` from `news` where `id` = {$newsId}";
+$sql = "select `id` from `news` where `id` = '{$newsId}'";
 $obj = mysqli_query($con, $sql);
 //如果根据id查询不到资讯，就跳转回index页
 if(!$news = mysqli_fetch_assoc($obj)){
